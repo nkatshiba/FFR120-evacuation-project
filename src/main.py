@@ -84,5 +84,5 @@ def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=1):
     plt.ioff()  # Turn off interactive mode
     return trajectory
 
-
+#test
 trajectory = experiment()
