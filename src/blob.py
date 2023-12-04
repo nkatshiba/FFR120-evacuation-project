@@ -1,3 +1,4 @@
+# blob.py
 import numpy as np
 
 
@@ -21,3 +22,4 @@ class Blob:
             v = self.velocity
         self.x, self.y = np.clip(
             np.array([self.x, self.y]) + stepsize * v, 0, D)
+

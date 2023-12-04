@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
+
 def setup_plot(D):
     plt.ion()
     fig, ax = plt.subplots()
@@ -13,3 +14,4 @@ def setup_plot(D):
     border = Rectangle((0, 0), D, D, linewidth=1, edgecolor='white', facecolor='none')
     ax.add_patch(border)
     return fig, ax
+

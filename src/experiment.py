@@ -1,7 +1,9 @@
+# experiment.py
 import numpy as np
 import matplotlib.pyplot as plt
 from initialize_blobs import initializeBlobs
 from setup_plot import setup_plot
+
 
 def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=2):
     blobs = initializeBlobs(N, D=D)
@@ -45,3 +47,4 @@ def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=2):
         print(f"Escape time: {escape_time} time steps")
     else:
         print("Simulation ended without all individuals escaping.")
+

@@ -1,5 +1,7 @@
+# initialize_blobs.py
 import numpy as np
 from blob import Blob
+
 
 def initializeBlobs(N, D=25):
     blobs = []
@@ -13,3 +15,4 @@ def initializeBlobs(N, D=25):
             y = np.random.rand() * D
         blobs.append(Blob(angle, x, y))
     return blobs
+
