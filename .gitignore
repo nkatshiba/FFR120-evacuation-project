@@ -166,3 +166,7 @@ pyproject.toml
 
 # ignore bak folder
 .bak
+
+# specifics
+pdfs
+

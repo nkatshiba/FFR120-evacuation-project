@@ -35,7 +35,7 @@ def update_rule_4(present, exit_point, alarm_on, stepsize=1, eta=0.1, D=25, R=1,
     return (future)
 
 
-def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=4):
+def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=1):
     state0 = initializeCells(N, D=D)
     trajectory = np.zeros(shape=(N*3, T))
     trajectory[:, 0] = state0
