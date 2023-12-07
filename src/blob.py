@@ -39,3 +39,4 @@ class Blob:
         if (((D/2 - cross_width/2 < x) & (x < D/2 + cross_width/2)).any() or ((D/2 - cross_width/2 < y) & (y < D/2 + cross_width/2)).any()):
             return True
         return False
+

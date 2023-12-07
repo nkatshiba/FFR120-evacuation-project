@@ -31,3 +31,4 @@ def setup_plot(D):
     ax.add_patch(Rectangle((2, D/2-0.25), D-4, 0.5, color='white'))
 
     return fig, ax
+
