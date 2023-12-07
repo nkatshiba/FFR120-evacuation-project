@@ -1,9 +1,8 @@
-# initialize_blobs.py
 import numpy as np
 from blob import Blob
 
 
-def initializeBlobs(N, D=25):
+def initializeBlobs(N, D, threshold, min_velocity):
     blobs = []
     for i in range(N):
         angle = np.random.rand() * 2 * np.pi
@@ -13,6 +12,6 @@ def initializeBlobs(N, D=25):
         else:
             x = D / 2 + np.random.rand() * D / 2
             y = np.random.rand() * D
-        blobs.append(Blob(angle, x, y))
+        blobs.append(Blob(angle, x, y, threshold, min_velocity))
     return blobs
 

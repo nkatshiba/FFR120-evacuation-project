@@ -3,11 +3,13 @@ import numpy as np
 
 
 class Blob:
-    def __init__(self, angle, x, y):
+    def __init__(self, angle, x, y, threshold, min_velocity):
         self.angle = angle
         self.x = x
         self.y = y
         self.velocity = np.array([0.0, 0.0])
+        self.threshold = threshold
+        self.min_velocity = min_velocity
 
     def check_proximity(self, blobs, threshold, min_velocity):
         close_blobs = 0

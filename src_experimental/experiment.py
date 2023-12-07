@@ -6,8 +6,8 @@ from setup_plot import setup_plot
 from matplotlib.patches import Rectangle
 
 
-def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=2):
-    blobs = initializeBlobs(N, D=D)
+def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity):
+    blobs = initializeBlobs(N, D, threshold, min_velocity)
     fig, ax = setup_plot(D)
     exit_point = np.array([D/2, D])
     exit_point2 = np.array([D, D/2])  # New exit
@@ -23,7 +23,7 @@ def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=2):
                 for blob in blobs:
                     blob.velocity = 0.08 * np.random.normal(eta * 5, 0.2)
             for blob in blobs:
-                blob.update([exit_point, exit_point2], alarm_on, stepsize, eta, D, blobs, threshold=0.3, min_velocity=0.01)
+                blob.update([exit_point, exit_point2], alarm_on, stepsize, eta, D, blobs, threshold=1, min_velocity=0.01)
 
         ax.clear()
         # Create walls
