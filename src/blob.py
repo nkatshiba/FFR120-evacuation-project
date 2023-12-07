@@ -11,6 +11,16 @@ class Blob:
         self.threshold = threshold
         self.min_velocity = min_velocity
 
+    def get_quadrant(self, D):
+        if self.x >= D/2 and self.y >= D/2:
+            return 1
+        elif self.x < D/2 and self.y > D/2:
+            return 2
+        elif self.x < D/2 and self.y < D/2:
+            return 3
+        else:
+            return 4
+
     def check_proximity(self, blobs, threshold, min_velocity):
         close_blobs = 0
         for other_blob in blobs:
@@ -25,10 +35,17 @@ class Blob:
     def update(self, exit_points, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity):
         self.check_proximity(blobs, threshold, min_velocity)
         if alarm_on:
-            # Determine the closest exit point
-            distances = [np.sqrt((exit_point[0] - self.x)**2 + (exit_point[1] - self.y)**2) for exit_point in exit_points]
-            closest_exit = exit_points[np.argmin(distances)]
-            exit_direction = np.arctan2(closest_exit[1] - self.y, closest_exit[0] - self.x)
+            quadrant = self.get_quadrant(D)
+            if quadrant == 1:
+                preferred_exit = exit_points[0]
+            elif quadrant == 2:
+                preferred_exit = exit_points[0]
+            elif quadrant == 3:
+                preferred_exit = exit_points[2]
+            else:
+                preferred_exit = exit_points[1]
+
+            exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
             self.angle = 0.5 * self.angle + 0.5 * exit_direction
             noise = (-eta / 2 + np.random.rand(1) * eta / 2)
             self.angle = self.angle + noise.item()
@@ -38,12 +55,10 @@ class Blob:
 
         proposed_position = np.array([self.x, self.y]) + stepsize * v
         if self.intersects_wall(proposed_position, D):
-            # If the proposed move intersects the wall, adjust the move to avoid the wall
-            # Move along the edge of the wall towards the exit
-            if abs(proposed_position[0] - D/2) < abs(proposed_position[1] - D/2):
-                proposed_position[0] = self.x
-            else:
-                proposed_position[1] = self.y
+            self.angle += np.pi / 4
+            v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
+            proposed_position[0] = self.x
+            proposed_position[1] = self.y
 
         self.x, self.y = np.clip(proposed_position, 0, D)
 
