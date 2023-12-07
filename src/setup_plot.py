@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
+
 def setup_plot(D):
     plt.ion()
     fig, ax = plt.subplots()
