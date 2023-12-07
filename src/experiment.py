@@ -11,24 +11,24 @@ def experiment(N=30, T=1000, R=1, D=25, eta=0.1, stepsize=2):
     fig, ax = setup_plot(D)
     exit_point = np.array([D/2, D])
     exit_point2 = np.array([D, D/2])  # New exit
-
     exit_counter = 0
     exited_blobs = set()
     escape_time = None
     k = 0
     for t in range(T-1):
         alarm_on = t >= 50
-        if alarm_on and k == 0:
-            k = 1
+        if alarm_on:
+            if k == 0:
+                k = 1
+                for blob in blobs:
+                    blob.velocity = 0.08 * np.random.normal(eta * 5, 0.2)
             for blob in blobs:
-                blob.velocity = 0.08 * np.random.normal(eta * 5, 0.2)
-        for blob in blobs:
-            blob.update([exit_point, exit_point2], alarm_on, stepsize, eta, D)  # Pass a list of exit points
+                blob.update([exit_point, exit_point2], alarm_on, stepsize, eta, D, blobs, threshold=0.3, min_velocity=0.01)
+
         ax.clear()
-        ##### Create walls
+        # Create walls
         ax.add_patch(Rectangle((D/2-0.25, 2), 0.5, D-4, color='white'))
         ax.add_patch(Rectangle((2, D/2-0.25), D-4, 0.5, color='white'))
-        #####
         ax.set_xlim(0, D)
         ax.set_ylim(0, D)
         ax.set_title('Simulation of an Evacuation', color='#fdb777', y=1.05)

@@ -9,7 +9,19 @@ class Blob:
         self.y = y
         self.velocity = np.array([0.0, 0.0])
 
-    def update(self, exit_points, alarm_on, stepsize, eta, D):
+    def check_proximity(self, blobs, threshold, min_velocity):
+        close_blobs = 0
+        for other_blob in blobs:
+            if other_blob is not self:
+                distance = np.sqrt((self.x - other_blob.x)**2 + (self.y - other_blob.y)**2)
+                if distance < threshold:
+                    close_blobs += 1
+        if close_blobs >= 2:
+            self.velocity /= 2
+            self.velocity = np.maximum(self.velocity, min_velocity)
+
+    def update(self, exit_points, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity):
+        self.check_proximity(blobs, threshold, min_velocity)
         if alarm_on:
             # Determine the closest exit point
             distances = [np.sqrt((exit_point[0] - self.x)**2 + (exit_point[1] - self.y)**2) for exit_point in exit_points]
