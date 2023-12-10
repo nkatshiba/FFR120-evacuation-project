@@ -52,20 +52,28 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity):
         if exit_counter == N:
             escape_time = t
 
-        ax.scatter(*exit_point1, color='#B22222', s=200)
-        ax.text(*exit_point1, 'Exit 1', ha='center', va='bottom', color='#B22222')
-        ax.scatter(*exit_point2, color='#c64f38', s=200)
-        ax.text(*exit_point2, 'Exit 2', ha='center', va='bottom', color='#c64f38')
-        ax.scatter(*exit_point3, color='#B22222', s=200)
-        ax.text(*exit_point3, 'Exit 3', ha='center', va='bottom', color='#B22222')
-        ax.scatter(*exit_point4, color='#c64f38', s=200)
-        ax.text(*exit_point4, 'Exit 4', ha='center', va='bottom', color='#c64f38')
+        exit_col1 = '#ff003d'
+        exit_col2 = '#ff003d'
+        exit_col3 = '#69c3c3'
+        exit_col4 = '#ffa0cd'
+        exit_count_col = '#74e3b1'
+        time_col = '#D3D3D3'
+        alarm_col = '#FFFF00'
 
-        ax.text(0 + 0.2, D - 0.7, 'Exit counter: {}'.format(exit_counter), ha='left', va='top', color='#74e3b1', weight='bold', fontsize=10)
-        ax.text(0 + 0.2, D - 0.2, f'Time step: {t}', ha='left', va='top', color='#D3D3D3', weight='bold', fontsize=10)
+        ax.scatter(*exit_point1, color=exit_col1, s=200)
+        ax.text(*exit_point1, 'Exit 1', ha='center', va='bottom', color=exit_col1)
+        ax.scatter(*exit_point2, color=exit_col2, s=200)
+        ax.text(*exit_point2, 'Exit 2', ha='left', va='center', color=exit_col2)
+        ax.scatter(*exit_point3, color=exit_col3, s=200)
+        ax.text(*exit_point3, 'CP 1', ha='right', va='center', color=exit_col3)
+        ax.scatter(*exit_point4, color=exit_col4, s=200)
+        ax.text(*exit_point4, 'CP 2', ha='center', va='top', color=exit_col4)
+
+        ax.text(0 + 0.2, D - 0.7, 'Exit counter: {}'.format(exit_counter), ha='left', va='top', color=exit_count_col, weight='bold', fontsize=10)
+        ax.text(0 + 0.2, D - 0.2, f'Time step: {t}', ha='left', va='top', color=time_col, weight='bold', fontsize=10)
 
         if alarm_on:
-            ax.text(D/2, 0, 'Alarm ON', ha='center', va='bottom', color='#FFFF00', fontsize=14)
+            ax.text(D/2, 0.7, 'Alarm ON', ha='center', va='bottom', color=alarm_col, fontsize=14)
 
         plt.draw()
         plt.pause(0.01)
