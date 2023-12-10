@@ -45,43 +45,47 @@ class Blob:
             self.velocity /= 1.1
             self.velocity = np.maximum(self.velocity, min_velocity)
 
-    def update(self, exit_points, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity, max_velocity, turn_around_steps):
+    def closest_checkpoint(self, checkpoints):
+        distances = [np.linalg.norm(np.array([self.x, self.y]) - cp) for cp in checkpoints]
+        closest_index = np.argmin(distances)
+        return checkpoints[closest_index]
+
+    def update(self, exit_points, checkpoints, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity, max_velocity, turn_around_steps):
         self.check_proximity(blobs, threshold, min_velocity)
 
         if alarm_on:
-
             quadrant = self.get_quadrant(D)
-            if quadrant == 1:
-                preferred_exit = exit_points[0]
-            elif quadrant == 2:
-                preferred_exit = exit_points[0]
-            elif quadrant == 3:
-                preferred_exit = exit_points[2]
+            if quadrant in [1, 2]:
+                preferred_exit = exit_points[0] if quadrant == 1 else exit_points[1]
             else:
-                preferred_exit = exit_points[1]
+                if quadrant == 3:
+                    preferred_exit = exit_points[2]
+                else:
+                    preferred_exit = exit_points[1]
+
+                if not hasattr(self, 'reached_checkpoint'):
+                    closest_cp = self.closest_checkpoint(checkpoints)
+                    if np.linalg.norm(np.array([self.x, self.y]) - closest_cp) < threshold:
+                        self.reached_checkpoint = True
+                    else:
+                        preferred_exit = closest_cp
 
             exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
 
             if np.linalg.norm(self.velocity) > max_velocity:
                 second_closest_exit = self.get_second_closest_exit(exit_points)
-                # If velocity exceeds the threshold, move towards the second closest exit point for a few steps.
                 if hasattr(self, 'turn_around_count') and self.turn_around_count > 0:
-                    # Continue moving towards the second closest exit.
                     exit_direction = np.arctan2(second_closest_exit[1] - self.y, second_closest_exit[0] - self.x)
                     self.angle = 0.5 * self.angle + 0.5 * exit_direction
-                    #noise = (-eta / 2 + np.random.rand(1) * eta / 2)
-                    self.angle = self.angle #+ noise.item()
-                    #reduce speed so that it doesn't keep going in the wrong direction
+                    self.angle = self.angle
                     v = self.velocity * 0.5 * np.array([np.cos(self.angle), np.sin(self.angle)])
                     self.turn_around_count -= 1
                 else:
-                    #
                     self.turn_around_count = turn_around_steps
                     exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
 
             self.angle = 0.5 * self.angle + 0.5 * exit_direction
-            #noise = (-eta / 2 + np.random.rand(1) * eta / 2)
-            self.angle = self.angle #+ noise.item()
+            self.angle = self.angle
             v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
         else:
             v = self.velocity
