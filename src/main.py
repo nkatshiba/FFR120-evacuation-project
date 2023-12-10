@@ -11,9 +11,10 @@ def run_simulation():
     stepsize = 2  # Step size for the blob movement
     threshold = 1  # Distance threshold for checking proximity between blobs
     min_velocity = 0.01  # Minimum velocity of the blobs
+    alarm_delay = 20
 
     # Simulate
-    experiment(N, T, R, D, eta, stepsize, threshold, min_velocity)
+    experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay)
 
 
 if __name__ == "__main__":

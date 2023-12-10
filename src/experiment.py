@@ -5,7 +5,7 @@ from initialize_blobs import initializeBlobs
 from setup_plot import setup_plot
 
 
-def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity):
+def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
     blobs = initializeBlobs(N, D, threshold, min_velocity)
     fig, ax = plt.subplots()
     setup_plot(fig, ax, D)  # Pass the ax object to setup_plot
@@ -23,7 +23,7 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity):
     k = 0
 
     for t in range(T-1):
-        alarm_on = t >= 50
+        alarm_on = t >= alarm_delay
         if alarm_on:
             if k == 0:
                 k = 1
