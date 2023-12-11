@@ -20,6 +20,7 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
     exit_counter = 0
     exited_blobs = set()
     escape_time = None
+    eighty_perc_escape_time = None
     k = 0
 
     for t in range(T-1):
@@ -29,6 +30,8 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
                 k = 1
                 for blob in blobs:
                     blob.velocity = 0.1 * np.random.normal(eta * 5, 0.2)
+                    if blob.velocity < min_velocity:
+                        blob.velocity = min_velocity
         for blob in blobs:
             blob.update(
                 [exit_point1, exit_point2, check_point1, check_point2],
@@ -39,8 +42,8 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
                 D,
                 blobs,
                 threshold=1,
-                min_velocity=0.01,
-                max_velocity=0.05,
+                min_velocity=0.02,
+                max_velocity=0.07,
                 turn_around_steps=20,
                 exit_counter=exit_counter,
                 exited_blobs=exited_blobs,
@@ -67,6 +70,9 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
             if blob not in exited_blobs and (np.linalg.norm(np.array([blob.x, blob.y]) - exit_point1) < R or np.linalg.norm(np.array([blob.x, blob.y]) - exit_point2) < R):
                 exit_counter += 1
                 exited_blobs.add(blob)  # Add the blob object, not its index
+
+        if exit_counter == 0.8*N:
+            eighty_perc_escape_time = t
 
         if exit_counter == N:
             escape_time = t
@@ -107,8 +113,10 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
             break
 
     plt.ioff()
-
-    if escape_time is not None:
-        print(f"Escape time: {escape_time} time steps")
+    plt.close(fig)
+    if escape_time is not None or eighty_perc_escape_time is not None:
+        print(f"Escape time: {escape_time} time steps | Escape time (80%): {eighty_perc_escape_time} time steps")
+        return escape_time, eighty_perc_escape_time
     else:
         print("Simulation ended without all individuals escaping.")
+        return escape_time, eighty_perc_escape_time

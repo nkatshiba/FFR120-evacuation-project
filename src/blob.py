@@ -158,10 +158,10 @@ class Blob:
             proposed_position = np.array([self.x, self.y]) + stepsize * v
             if not self.intersects_wall(proposed_position):
                 self.x, self.y = np.clip(proposed_position, 0, D)
-            # else:
+            else:
                 # self.angle = 0.5 * self.angle + 0.5 * exit_direction
                 # self.angle = self.angle
-                # self.x, self.y = np.clip(proposed_position, 0, D)
+                self.x, self.y = np.clip(proposed_position, 0, D)
 
     def intersects_wall(self, proposed_position):
         x, y = proposed_position
