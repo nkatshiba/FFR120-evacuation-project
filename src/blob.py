@@ -59,11 +59,16 @@ class Blob:
         if alarm_on:
             quadrant = self.get_quadrant(D)
             if quadrant == 3:
-                if not hasattr(self, 'reached_checkpoint'):
+                if not hasattr(self, 'reached_checkpoint_0'):
                     closest_cp = self.closest_checkpoint(checkpoints)
-                    if np.linalg.norm(np.array([self.x, self.y]) - closest_cp) < threshold:
-                        self.reached_checkpoint = True
-                    preferred_exit = exit_points[0] if hasattr(self, 'reached_checkpoint') else closest_cp
+                    if np.linalg.norm(np.array([self.x, self.y]) - checkpoints[0]) < threshold:
+                        self.reached_checkpoint_0 = True
+                    preferred_exit = exit_points[0] if hasattr(self, 'reached_checkpoint_0') else closest_cp
+                elif not hasattr(self, 'reached_checkpoint_1'):
+                    closest_cp = self.closest_checkpoint(checkpoints)
+                    if np.linalg.norm(np.array([self.x, self.y]) - checkpoints[1]) < threshold:
+                        self.reached_checkpoint_1 = True
+                    preferred_exit = exit_points[1] if hasattr(self, 'reached_checkpoint_1') else closest_cp
                 else:
                     preferred_exit = exit_points[0]
             elif quadrant == 1:
@@ -76,6 +81,19 @@ class Blob:
                 preferred_exit = exit_points[0]
 
             exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
+
+            if np.linalg.norm(self.velocity) > max_velocity:
+                second_closest_exit = self.get_second_closest_exit(exit_points)
+                if hasattr(self, 'turn_around_count') and self.turn_around_count > 0:
+                    exit_direction = np.arctan2(second_closest_exit[1] - self.y, second_closest_exit[0] - self.x)
+                    self.angle = 0.5 * self.angle + 0.5 * exit_direction
+                    self.angle = self.angle
+                    v = self.velocity * 0.5 * np.array([np.cos(self.angle), np.sin(self.angle)])
+                    self.turn_around_count -= 1
+                else:
+                    # self.turn_around_count = turn_around_steps
+                    exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
+
             self.angle = 0.5 * self.angle + 0.5 * exit_direction
             v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
 
