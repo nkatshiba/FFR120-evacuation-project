@@ -63,47 +63,33 @@ class Blob:
                     closest_cp = self.closest_checkpoint(checkpoints)
                     if np.linalg.norm(np.array([self.x, self.y]) - closest_cp) < threshold:
                         self.reached_checkpoint = True
-                        preferred_exit = closest_cp
-                    else:
-                        preferred_exit = closest_cp
+                    preferred_exit = exit_points[0] if hasattr(self, 'reached_checkpoint') else closest_cp
                 else:
-                    preferred_exit = exit_points[0] if quadrant == 2 else exit_points[2]
+                    preferred_exit = exit_points[0]
+            elif quadrant == 1:
+                preferred_exit = exit_points[0]
+            elif quadrant == 2:
+                preferred_exit = exit_points[0]
+            elif quadrant == 4:
+                preferred_exit = exit_points[1]
             else:
-                preferred_exit = exit_points[0] if quadrant == 2 else exit_points[1]
+                preferred_exit = exit_points[0]
 
             exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
-
-            if np.linalg.norm(self.velocity) > max_velocity:
-                second_closest_exit = self.get_second_closest_exit(exit_points)
-                if hasattr(self, 'turn_around_count') and self.turn_around_count > 0:
-                    exit_direction = np.arctan2(second_closest_exit[1] - self.y, second_closest_exit[0] - self.x)
-                    self.angle = 0.5 * self.angle + 0.5 * exit_direction
-                    self.angle = self.angle
-                    v = self.velocity * 0.5 * np.array([np.cos(self.angle), np.sin(self.angle)])
-                    self.turn_around_count -= 1
-                else:
-                    self.turn_around_count = turn_around_steps
-                    exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
-
             self.angle = 0.5 * self.angle + 0.5 * exit_direction
-            self.angle = self.angle
             v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
-        else:
-            v = self.velocity
 
-        proposed_position = np.array([self.x, self.y]) + stepsize * v
-        # if self.intersects_wall(proposed_position, D):
-        #     self.angle += np.pi / 4
-        #     v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
-        #     proposed_position[0] = self.x
-        #     proposed_position[1] = self.y
+            proposed_position = np.array([self.x, self.y]) + stepsize * v
 
-        self.x, self.y = np.clip(proposed_position, 0, D)
+            self.x, self.y = np.clip(proposed_position, 0, D)
 
     def intersects_wall(self, proposed_position, D):
         cross_width = 1  # adjust as needed
+        passage_width = 4  # adjust as needed
         x, y = proposed_position
-        if (((D/2 - cross_width/2 < x) & (x < D/2 + cross_width/2)).any() or ((D/2 - cross_width/2 < y) & (y < D/2 + cross_width/2)).any()):
-            return True
-        return False
+
+        in_horizontal_cross = (D/2 - cross_width/2 < x < D/2 + cross_width/2) and not (passage_width < y < D - passage_width)
+        in_vertical_cross = (D/2 - cross_width/2 < y < D/2 + cross_width/2) and not (passage_width < x < D - passage_width)
+
+        return in_horizontal_cross or in_vertical_cross
 
