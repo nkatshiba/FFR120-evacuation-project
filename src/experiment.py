@@ -41,12 +41,10 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
         setup_plot(fig, ax, D)  # Reset the plot using the existing ax object
 
         for blob in blobs:
-            if blob in exited_blobs:
-                # Exited blobs in gray
-                ax.plot(blob.x, blob.y, '.', color='#808080')
-            else:
-                # Moving blobs in blue
-                ax.plot(blob.x, blob.y, '.', color='#0000FF')
+            if blob in exited_blobs: # Exited blobs in gray
+                ax.plot(blob.x, blob.y, 'o', color='#00ff0c', markersize=7)
+            else: # Moving blobs in blue
+                ax.plot(blob.x, blob.y, 'o', color='#ff02c5', markersize=7)
 
         for blob in blobs:
             if blob not in exited_blobs and (np.linalg.norm(np.array([blob.x, blob.y]) - exit_point1) < R or np.linalg.norm(np.array([blob.x, blob.y]) - exit_point2) < R):
@@ -71,10 +69,10 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
         ax.scatter(*exit_point2, color=exit_col2, s=200)
         ax.text(*exit_point2, 'Exit 2', ha='left',
                 va='center', color=exit_col2)
-        ax.scatter(*check_point1, color=cp_col1, s=200)
-        ax.text(*check_point1, 'CP 1', ha='right', va='center', color=cp_col1)
-        ax.scatter(*check_point2, color=cp_col2, s=200)
-        ax.text(*check_point2, 'CP 2', ha='center', va='top', color=cp_col2)
+        # ax.scatter(*check_point1, color=cp_col1, s=200)
+        # ax.text(*check_point1, 'CP 1', ha='right', va='center', color=cp_col1)
+        # ax.scatter(*check_point2, color=cp_col2, s=200)
+        # ax.text(*check_point2, 'CP 2', ha='center', va='top', color=cp_col2)
 
         ax.text(0 + 0.2, D - 0.7, 'Exit counter: {}'.format(exit_counter),
                 ha='left', va='top', color=exit_count_col, weight='bold', fontsize=10)

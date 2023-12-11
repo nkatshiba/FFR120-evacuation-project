@@ -1,5 +1,6 @@
 # blob.py
 import numpy as np
+import time
 
 
 class Blob:
@@ -10,6 +11,8 @@ class Blob:
         self.velocity = np.array([0.0, 0.0])
         self.threshold = threshold
         self.min_velocity = min_velocity
+        self.last_exec_time = 0  # Add this line
+
 
     def get_quadrant(self, D):
         if self.x >= D/2 and self.y >= D/2:
@@ -133,10 +136,15 @@ class Blob:
                     )
                     self.turn_around_count -= 1
                 else:
-                    # self.turn_around_count = turn_around_steps
-                    exit_direction = np.arctan2(
-                        preferred_exit[1] - self.y, preferred_exit[0] - self.x
-                    )
+
+                    current_time = time.time()
+                    if current_time - self.last_exec_time >= 10:  # Check if 5 seconds have passed
+                        self.turn_around_count = turn_around_steps
+                        exit_direction = np.arctan2(
+                            preferred_exit[1] - self.y, preferred_exit[0] - self.x
+                        )
+
+                        self.last_exec_time = current_time  # Update the timestamp
 
             self.angle = 0.5 * self.angle + 0.5 * exit_direction
             v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])

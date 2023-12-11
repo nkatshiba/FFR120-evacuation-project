@@ -16,8 +16,8 @@ def setup_plot(fig, ax, D):  # Only pass the ax object
     ax.add_patch(border)
     cross_width = 0.25  # adjust as needed
     passage_width = 2  # adjust as needed
-    ax.add_patch(Rectangle((D/2-cross_width, passage_width), 0.5, D-4, color='white'))
-    ax.add_patch(Rectangle((passage_width, D/2-cross_width), D-4, 0.5, color='white'))
+    ax.add_patch(Rectangle((D/2-cross_width, passage_width), 0.5, D-4, color='#4f4f4f'))
+    ax.add_patch(Rectangle((passage_width, D/2-cross_width), D-4, 0.5, color='#4f4f4f'))
 
     # return fig, ax
 
