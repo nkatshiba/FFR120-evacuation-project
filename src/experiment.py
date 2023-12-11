@@ -32,8 +32,10 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
 
         for blob in blobs:
             # blob.update([exit_point1, exit_point2, check_point1, check_point2], alarm_on, stepsize, eta, D, blobs, threshold=1, min_velocity=0.01)
+            # blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
+            #             eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20)
             blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
-                        eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20)
+                        eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20, exit_counter=exit_counter, exited_blobs=exited_blobs)
 
         ax.clear()
         setup_plot(fig, ax, D)  # Reset the plot using the existing ax object
