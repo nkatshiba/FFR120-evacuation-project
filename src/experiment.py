@@ -29,13 +29,30 @@ def experiment(N, T, R, D, eta, stepsize, threshold, min_velocity, alarm_delay):
                 k = 1
                 for blob in blobs:
                     blob.velocity = 0.1 * np.random.normal(eta * 5, 0.2)
-
         for blob in blobs:
-            # blob.update([exit_point1, exit_point2, check_point1, check_point2], alarm_on, stepsize, eta, D, blobs, threshold=1, min_velocity=0.01)
-            # blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
-            #             eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20)
-            blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
-                        eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20, exit_counter=exit_counter, exited_blobs=exited_blobs)
+            blob.update(
+                [exit_point1, exit_point2, check_point1, check_point2],
+                [check_point1, check_point2],
+                alarm_on,
+                stepsize,
+                eta,
+                D,
+                blobs,
+                threshold=1,
+                min_velocity=0.01,
+                max_velocity=0.05,
+                turn_around_steps=20,
+                exit_counter=exit_counter,
+                exited_blobs=exited_blobs,
+                alignment_strength=0.5,  # Adjust this value to control the strength of alignment
+                neighbor_radius=5,  # Adjust this value to control the radius for neighbor detection
+            )
+        # for blob in blobs:
+        #     # blob.update([exit_point1, exit_point2, check_point1, check_point2], alarm_on, stepsize, eta, D, blobs, threshold=1, min_velocity=0.01)
+        #     # blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
+        #     #             eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20)
+        #     blob.update([exit_point1, exit_point2, check_point1, check_point2], [check_point1, check_point2], alarm_on, stepsize,
+        #                 eta, D, blobs, threshold=1, min_velocity=0.01, max_velocity=0.05, turn_around_steps=20, exit_counter=exit_counter, exited_blobs=exited_blobs)
 
         ax.clear()
         setup_plot(fig, ax, D)  # Reset the plot using the existing ax object

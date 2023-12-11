@@ -13,6 +13,22 @@ class Blob:
         self.min_velocity = min_velocity
         self.last_exec_time = 0  # Add this line
 
+    def average_neighbor_direction(self, blobs, radius):
+        neighbor_count = 0
+        avg_direction = np.array([0.0, 0.0])
+
+        for other_blob in blobs:
+            if other_blob is not self:
+                distance = np.sqrt((self.x - other_blob.x)**2 + (self.y - other_blob.y)**2)
+                if distance < radius:
+                    avg_direction += np.array([np.cos(other_blob.angle), np.sin(other_blob.angle)])
+                    neighbor_count += 1
+
+        if neighbor_count > 0:
+            avg_direction /= neighbor_count
+            return np.arctan2(avg_direction[1], avg_direction[0])
+        else:
+            return self.angle
 
     def get_quadrant(self, D):
         if self.x >= D/2 and self.y >= D/2:
@@ -57,22 +73,7 @@ class Blob:
     # exit_point[1] = np.array([D, D/2])  # RIGHT
     # exit_point[2] = np.array([0, D/2])  # LEFT
     # exit_point[3] = np.array([D/2, 0])  # BOT
-    def update(
-       self,
-       exit_points,
-       checkpoints,
-       alarm_on,
-       stepsize,
-       eta,
-       D,
-       blobs,
-       threshold,
-       min_velocity,
-       max_velocity,
-       turn_around_steps,
-       exit_counter,
-       exited_blobs,
-    ):
+    def update(self, exit_points, checkpoints, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity, max_velocity, turn_around_steps, exit_counter, exited_blobs, alignment_strength, neighbor_radius):
         # Check if the blob has reached the exit point
         if np.linalg.norm(np.array([self.x, self.y]) - exit_points[1]) < 0.25:
             exit_counter += 1
@@ -121,6 +122,11 @@ class Blob:
                 preferred_exit[1] - self.y, preferred_exit[0] - self.x
             )
 
+            # Update the angle based on the average direction of neighbors
+            avg_neighbor_dir = self.average_neighbor_direction(blobs, neighbor_radius)
+            self.angle = (1 - alignment_strength) * self.angle + alignment_strength * avg_neighbor_dir
+
+
             if np.linalg.norm(self.velocity) > max_velocity:
                 second_closest_exit = self.get_second_closest_exit(exit_points)
                 if hasattr(self, "turn_around_count") and self.turn_around_count > 0:
@@ -150,21 +156,14 @@ class Blob:
             v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
 
             proposed_position = np.array([self.x, self.y]) + stepsize * v
+            if not self.intersects_wall(proposed_position):
+                self.x, self.y = np.clip(proposed_position, 0, D)
+            # else:
+                # self.angle = 0.5 * self.angle + 0.5 * exit_direction
+                # self.angle = self.angle
+                # self.x, self.y = np.clip(proposed_position, 0, D)
 
-            self.x, self.y = np.clip(proposed_position, 0, D)
-
-            # Check if the blob has reached the exit point
-            # if np.linalg.norm(np.array([self.x, self.y]) - exit_points[1]) < threshold:
-            #     preferred_exit = exit_points[1]
-            #     self.velocity = np.array([0.0, 0.0])  # Stop the blob
-
-    def intersects_wall(self, proposed_position, D):
-        cross_width = 1  # adjust as needed
-        passage_width = 4  # adjust as needed
+    def intersects_wall(self, proposed_position):
         x, y = proposed_position
-
-        in_horizontal_cross = (D/2 - cross_width/2 < x < D/2 + cross_width/2) and not (passage_width < y < D - passage_width)
-        in_vertical_cross = (D/2 - cross_width/2 < y < D/2 + cross_width/2) and not (passage_width < x < D - passage_width)
-
-        return in_horizontal_cross or in_vertical_cross
+        return (2 <= x <= 23 and 12 <= y <= 13) or (2 <= y <= 23 and 12 <= x <= 13)
 

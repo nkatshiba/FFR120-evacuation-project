@@ -3,7 +3,7 @@ from experiment import experiment
 
 
 def run_simulation():
-    N = 30  # Number of blobs (individuals)
+    N = 50  # Number of blobs (individuals)
     T = 1000  # Total number of time steps in the simulation
     R = 0.25  # Radius of the exit points
     D = 25  # Height and width of the layout (DxD)
