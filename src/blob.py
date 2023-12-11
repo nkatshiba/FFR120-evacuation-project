@@ -50,25 +50,26 @@ class Blob:
         closest_index = np.argmin(distances)
         return checkpoints[closest_index]
 
+    # exit_point[0] = np.array([D/2, D])  # TOP
+    # exit_point[1] = np.array([D, D/2])  # RIGHT
+    # exit_point[2] = np.array([0, D/2])  # LEFT
+    # exit_point[3] = np.array([D/2, 0])  # BOT
     def update(self, exit_points, checkpoints, alarm_on, stepsize, eta, D, blobs, threshold, min_velocity, max_velocity, turn_around_steps):
         self.check_proximity(blobs, threshold, min_velocity)
-
         if alarm_on:
             quadrant = self.get_quadrant(D)
-            if quadrant in [1, 2]:
-                preferred_exit = exit_points[0] if quadrant == 1 else exit_points[1]
-            else:
-                if quadrant == 3:
-                    preferred_exit = exit_points[2]
-                else:
-                    preferred_exit = exit_points[1]
-
+            if quadrant == 3:
                 if not hasattr(self, 'reached_checkpoint'):
                     closest_cp = self.closest_checkpoint(checkpoints)
                     if np.linalg.norm(np.array([self.x, self.y]) - closest_cp) < threshold:
                         self.reached_checkpoint = True
+                        preferred_exit = closest_cp
                     else:
                         preferred_exit = closest_cp
+                else:
+                    preferred_exit = exit_points[0] if quadrant == 2 else exit_points[2]
+            else:
+                preferred_exit = exit_points[0] if quadrant == 2 else exit_points[1]
 
             exit_direction = np.arctan2(preferred_exit[1] - self.y, preferred_exit[0] - self.x)
 
