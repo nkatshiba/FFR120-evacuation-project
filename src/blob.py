@@ -92,11 +92,11 @@ class Blob:
             v = self.velocity
 
         proposed_position = np.array([self.x, self.y]) + stepsize * v
-        if self.intersects_wall(proposed_position, D):
-            self.angle += np.pi / 4
-            v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
-            proposed_position[0] = self.x
-            proposed_position[1] = self.y
+        # if self.intersects_wall(proposed_position, D):
+        #     self.angle += np.pi / 4
+        #     v = self.velocity * np.array([np.cos(self.angle), np.sin(self.angle)])
+        #     proposed_position[0] = self.x
+        #     proposed_position[1] = self.y
 
         self.x, self.y = np.clip(proposed_position, 0, D)
 
